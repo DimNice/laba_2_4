@@ -8,7 +8,7 @@ typedef struct {
 	size_t copy_count;
 } stats;
 
-const int n = 1000;
+//const int n = 1000;
 
 stats selection_sort(std::vector<int>& data) 
 {
@@ -76,29 +76,54 @@ stats quick_sort(std::vector<int>& data)
 void main()
 {
 	setlocale(LC_ALL, "Rus");
-	vector <int> data(n);
 	srand(time(NULL));
-	stats avg_stats = { 0 };
-	for (int k = 0; k < 100; k++) 
+	int otf = 0;
+	int type_sort = 0;
+	while (type_sort <= 1)
 	{
-		for (int i = 0; i < n; i++)
+		int otf = 0;
+		while (otf <= 2)
 		{
-			data[i] = rand() % 100; 
-			//data[i] = i; 
-			//data[i] = n - i; 
-			//cout << data[i] << " ";
-		}
+			int n = 1000;
+			while (n <= 10000)
+			{
+				vector <int> data(n);
+				stats avg_stats = { 0 };
+				for (int k = 0; k < 100; k++)
+				{
+					if (otf == 0)
+					{
+						for (int i = 0; i < n; i++) data[i] = rand() % 100;
+					}
+					if (otf == 1)
+					{
+						for (int i = 0; i < n; i++) data[i] = i; ;
+					}
+					if (otf == 2)
+					{
+						for (int i = 0; i < n; i++) data[i] = n - i;;
+					}
 
-		stats data_stats = { 0 }; // объявили статистику
-		data_stats = selection_sort(data);
-		//data_stats = quick_sort(data);
-		avg_stats.comparison_count += data_stats.comparison_count;
-		avg_stats.copy_count += data_stats.copy_count;
-		//cout<<endl<<"Результирующий массив: ";
-		//for (int i = 0; i < n; i++)
-		//	cout << data[i] << " ";
+					stats data_stats = { 0 }; // объявили статистику
+					if (type_sort == 0) data_stats = selection_sort(data);
+					if (type_sort == 1) data_stats = quick_sort(data);
+					avg_stats.comparison_count += data_stats.comparison_count;
+					avg_stats.copy_count += data_stats.copy_count;
+				}
+				if (type_sort == 0) cout << "Вставками: " << endl;
+				if (type_sort == 1) cout << "Быстрая: " << endl;
+				if (otf == 0) cout << "Рандом: " << endl;
+				if (otf == 1) cout << "Прямой порядок: " << endl;
+				if (otf == 2) cout << "Обратный порядок: " << endl;
+				cout << "Размерность массива: " << n << endl;
+				cout << "Количество сравнений: " << avg_stats.comparison_count / 100 << endl;
+				cout << "Количество обменов: " << avg_stats.copy_count / 100 << endl;
+				cout << "______________________________ " << endl;
+				n = n + 1000;
+			}
+			otf++;;
+		}
+		type_sort++;
 	}
-	cout << endl << "Количество сравнений: " << avg_stats.comparison_count / 100 << endl;
-	cout << "Количество обменов: " << avg_stats.copy_count / 100 << endl;
 	system("pause");
 }
