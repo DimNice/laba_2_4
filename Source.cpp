@@ -8,8 +8,6 @@ typedef struct {
 	size_t copy_count;
 } stats;
 
-//const int n = 1000;
-
 stats selection_sort(std::vector<int>& data) 
 {
 	int count, key;
@@ -20,14 +18,14 @@ stats selection_sort(std::vector<int>& data)
 		key = i;
 		for (unsigned int j = i + 1; j < data.size(); j++)
 		{
-			current_stats.comparison_count++; // увеличиваем счётчик сравнений
+			current_stats.comparison_count++; 
 			if (data[j] < data[key])
 				key = j;
 		}
-		current_stats.comparison_count++; // увеличиваем счётчик сравнений
+		current_stats.comparison_count++; 
 		if (key != i)
 		{
-			current_stats.copy_count++;  // увеличиваем счётчик присваиваний
+			current_stats.copy_count++; 
 			data[i] = data[key];
 			data[key] = count;
 		}
@@ -40,24 +38,24 @@ void quicksort(std::vector<int>& data, int first, int last, size_t& comp_count, 
 {
 	int mid, count;
 	int f = first, l = last;
-	mid = data[(f + l) / 2]; //вычисление опорного элемента
+	mid = data[(f + l) / 2]; 
 	do
 	{
 		while (data[f] < mid)
 			f++;
 		while (data[l] > mid)
 			l--;
-		comp_count++; // увеличиваем счётчик сравнений
-		if (f <= l) //перестановка элементов
+		comp_count++; 
+		if (f <= l) 
 		{
-			copy_count++;  // увеличиваем счётчик присваиваний
+			copy_count++; 
 			count = data[f];
 			data[f] = data[l];
 			data[l] = count;
 			f++;
 			l--;
 		}
-	} while (f < l);
+	} while (f <= l);
 
 	if (first < l)
 		quicksort(data, first, l, comp_count, copy_count);
@@ -77,7 +75,6 @@ void main()
 {
 	setlocale(LC_ALL, "Rus");
 	srand(time(NULL));
-	int otf = 0;
 	int type_sort = 0;
 	while (type_sort <= 1)
 	{
@@ -89,26 +86,33 @@ void main()
 			{
 				vector <int> data(n);
 				stats avg_stats = { 0 };
-				for (int k = 0; k < 100; k++)
+				if (otf == 0)
 				{
-					if (otf == 0)
+					for (int k = 0; k < 100; k++)
 					{
 						for (int i = 0; i < n; i++) data[i] = rand() % 100;
+						stats data_stats = { 0 };
+						if (type_sort == 0) data_stats = selection_sort(data);
+						if (type_sort == 1) data_stats = quick_sort(data);
+						avg_stats.comparison_count += data_stats.comparison_count;
+						avg_stats.copy_count += data_stats.copy_count;
 					}
+				}
+				else
+				{
 					if (otf == 1)
 					{
-						for (int i = 0; i < n; i++) data[i] = i; ;
+						for (int i = 0; i < n; i++) data[i] = i;
 					}
 					if (otf == 2)
 					{
 						for (int i = 0; i < n; i++) data[i] = n - i;;
 					}
-
-					stats data_stats = { 0 }; // объявили статистику
+					stats data_stats = { 0 };
 					if (type_sort == 0) data_stats = selection_sort(data);
 					if (type_sort == 1) data_stats = quick_sort(data);
-					avg_stats.comparison_count += data_stats.comparison_count;
-					avg_stats.copy_count += data_stats.copy_count;
+					avg_stats.comparison_count = data_stats.comparison_count;
+					avg_stats.copy_count = data_stats.copy_count;
 				}
 				if (type_sort == 0) cout << "Вставками: " << endl;
 				if (type_sort == 1) cout << "Быстрая: " << endl;
@@ -116,9 +120,18 @@ void main()
 				if (otf == 1) cout << "Прямой порядок: " << endl;
 				if (otf == 2) cout << "Обратный порядок: " << endl;
 				cout << "Размерность массива: " << n << endl;
-				cout << "Количество сравнений: " << avg_stats.comparison_count / 100 << endl;
-				cout << "Количество обменов: " << avg_stats.copy_count / 100 << endl;
-				cout << "______________________________ " << endl;
+				if (otf == 0)
+				{
+					cout << "Количество сравнений: " << avg_stats.comparison_count / 100 << endl;
+					cout << "Количество обменов: " << avg_stats.copy_count / 100 << endl;
+					cout << "______________________________ " << endl;
+				}
+				else
+				{
+					cout << "Количество сравнений: " << avg_stats.comparison_count << endl;
+					cout << "Количество обменов: " << avg_stats.copy_count << endl;
+					cout << "______________________________ " << endl;
+				}
 				n = n + 1000;
 			}
 			otf++;;
@@ -127,3 +140,28 @@ void main()
 	}
 	system("pause");
 }
+/*void main()
+{
+	setlocale(LC_ALL, "Rus");
+	srand(time(NULL));
+	int n = 15;
+	vector <int> data(n);
+	for (int i = 0; i < n; i++)
+		data[i] = rand() % 150 - 50;
+
+
+	cout << "До: " << endl;
+	for (int i = 0; i < n; i++)
+		cout  << data[i] << ' ';
+
+
+	stats avg_stats = { 0 };
+	stats data_stats = { 0 };
+	data_stats = quick_sort(data);
+
+
+	cout << "После: " << endl;
+	for (int i = 0; i < n; i++)
+		cout << data[i] << ' ';
+	system("pause");
+}*/
